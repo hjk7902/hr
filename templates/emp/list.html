@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Employees List</h1>
+{% if emp_list %}
+    {% for emp in emp_list %}
+    <a href="/emp/{{ emp.employee_id }}/">{{ emp.employee_id }}</a>사원의 이름은 {{ emp.first_name }} 입니다.<br>
+    {% endfor %}
+{% endif%}
+{% endblock %}

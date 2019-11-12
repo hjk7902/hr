@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+    {% load bootstrap3 %}
+
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
+
+{% block content %}
+<h1>사원정보</h1>
+<div class="alert alert-primary" role="alert">
+  사원정보
+</div>
+{% if emp.errors %}
+    {{ emp.errors }}
+{% endif %}
+<form action="/emp/update/" method="post">
+    {% csrf_token %}
+    {% bootstrap_form emp exclude="first_name, last_name, email" %}
+<input type="submit" value="저장">
+<a href="/emp/{{ emp.employee_id.value }}/delete">삭제</a>
+<a href="/emp/list">목록</a>
+</form>
+{% endblock %}
