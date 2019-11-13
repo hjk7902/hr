@@ -1,11 +1,10 @@
 import json
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Avg
+from django.db.models import Avg, F, IntegerField
+from django.db.models.functions import Cast
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
-from django.template.loader import render_to_string
-from django.utils.safestring import mark_safe
 
 from emp.models import Employees
 from django.views.generic.base import TemplateView
@@ -79,10 +78,13 @@ def json_emp_list(request):
 
 
 def emp_chart(request):
-    data = [{"name": "Chrome", "y": 50, "sliced": "false", "selected": "true"},
-            {"name": "IE", "y": 40},
-            {"name": "Firefox", "y": 10}]
-    return JsonResponse(data, safe=False)
+    # data = [{"name": "Chrome", "y": 130, "sliced": "false", "selected": "true"},
+    #         {"name": "IE", "y": 100},
+    #         {"name": "Firefox", "y": 70}]
+    data = Employees.objects.values("department_id") \
+        .annotate(name=F("department_id"), y=Cast(Avg('salary'), IntegerField()))\
+        .order_by("department_id")
+    return JsonResponse(list(data), safe=False)
 
 
 def emp_chart_view(request):
